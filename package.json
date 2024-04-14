@@ -1,0 +1,26 @@
+{
+  "name": "rfxhelper",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.mjs",
+    "lint": "eslint . --ext .ts & prettier --check . & tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.19",
+    "@types/oojs-ui": "^0.47.6",
+    "@types/semver-compare": "^1.0.3",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "esbuild": "^0.19.12",
+    "eslint": "^8.56.0",
+    "prettier": "^3.2.5",
+    "types-mediawiki-renovate": "^2.10.0",
+    "typescript": "^5.3.3"
+  }
+}
