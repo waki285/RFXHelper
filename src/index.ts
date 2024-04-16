@@ -1,9 +1,12 @@
 import { initUD } from "./pages/(un)deletions";
+import { initPermissions } from "./pages/permissions";
 
 async function init() {
   const pageName = mw.config.get("wgPageName");
   if (pageName === "Steward_requests/(Un)deletions") {
     initUD();
+  } else if (pageName === "Steward_requests/Permissions") {
+    initPermissions();
   }
 }
 
