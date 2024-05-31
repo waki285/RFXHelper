@@ -1,4 +1,5 @@
 import { initUD } from "./pages/(un)deletions";
+import { initGlobal } from "./pages/global";
 import { initPermissions } from "./pages/permissions";
 
 async function init() {
@@ -7,6 +8,8 @@ async function init() {
     initUD();
   } else if (pageName === "Steward_requests/Permissions") {
     initPermissions();
+  } else if (pageName === "Steward_requests/Global") {
+    initGlobal();
   }
 }
 
