@@ -70,7 +70,7 @@ class ProcessDialog extends OO.ui.ProcessDialog {
 
     const usernameField = new OO.ui.FieldLayout(un1, {
       label:
-        "Please enter the username, IP address, or CIDR range of the user you would like to request a global (un)(b)lock for.",
+        $("<span>").html("Please enter the username, IP address, or CIDR range of the user you would like to request a global (un)(b)lock for.<br>TIP: Example|hidename=1 for hiding the username."),
       align: "top",
     });
 
