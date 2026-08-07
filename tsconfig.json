@@ -19,6 +19,6 @@
   },
   "include": [
     "src",
-    "./node_modules/types-mediawiki-renovate"
+    "./node_modules/types-mediawiki"
   ]
 }

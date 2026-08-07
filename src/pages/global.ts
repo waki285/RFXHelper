@@ -1,4 +1,4 @@
-import { isIPAddress } from "../util";
+import { getApiErrorNotificationWithWikitext, getDiscussionToolsApiError, isIPAddress, showErrorDialog } from "../util";
 
 class ProcessDialog extends OO.ui.ProcessDialog {
   public panel1?: OO.ui.PanelLayout;
@@ -237,7 +237,7 @@ class ProcessDialog extends OO.ui.ProcessDialog {
   getActionProcess(action: string) {
     if (action === "preview") {
       if (!this.checkInputs()) {
-        mw.notify("Please fill in all the required fields.", { type: "error" });
+        showErrorDialog("Please fill in all the required fields.");
         return new OO.ui.Process(() => {});
       }
       return new OO.ui.Process(() => {
@@ -258,15 +258,27 @@ class ProcessDialog extends OO.ui.ProcessDialog {
       this.stackLayout.setItem(this.panel1!);
     } else if (action === "continue") {
       if (!this.checkInputs()) {
-        mw.notify("Please fill in all the required fields.", { type: "error" });
+        showErrorDialog("Please fill in all the required fields.");
         return new OO.ui.Process(() => {});
       }
       return new OO.ui.Process(() => {
-        return this.submit().then(() => {
-          mw.notify("Request submitted successfully.", { type: "success" });
-          this.close();
-          location.reload();
-        });
+        const content = this.getRequestContent();
+        const submittedWikitext = `== ${content.section} ==\n${content.text}\n--~~` + '~~';
+        return this.submit().then(
+          (data) => {
+            const apiError = getDiscussionToolsApiError(data);
+            if (apiError) {
+              showErrorDialog(getApiErrorNotificationWithWikitext(apiError, submittedWikitext));
+              return;
+            }
+            mw.notify("Request submitted successfully.", { type: "success" });
+            this.close();
+            location.reload();
+          },
+          (code, data) => {
+            showErrorDialog(getApiErrorNotificationWithWikitext(getDiscussionToolsApiError(data) || code, submittedWikitext));
+          }
+        );
       });
     }
     return super.getActionProcess.call(this, action);

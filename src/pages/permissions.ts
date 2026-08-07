@@ -1,3 +1,5 @@
+import { getApiErrorNotificationWithWikitext, getEditApiError, showErrorDialog } from "../util";
+
 function getSections(): JQuery.Promise<{ index: string; line: string }[]> {
   return new mw.Api()
     .get({
@@ -225,7 +227,7 @@ class ProcessDialog extends OO.ui.ProcessDialog {
 
     return {
       section: `${username}@${action === "gipbe" ? "global" : `${subdomain}wiki`}`,
-      text: `{{Permission request\n|status = \n|wiki = ${subdomain}\n|user name = ${username || mw.config.get("wgUserName")}\n${discussion ? `|discussion = ${discussion}\n` : ""}}}\n${reason} --~~~~`,
+      text: `{{Permission request\n|status = \n|wiki = ${subdomain}\n|user name = ${username || mw.config.get("wgUserName")}\n${discussion ? `|discussion = ${discussion}\n` : ""}}}\n${reason} --~~` + `~~`,
       summary:
         (action === "gipbe"
           ? `Requesting GIPBE for ${username}`
@@ -279,8 +281,12 @@ class ProcessDialog extends OO.ui.ProcessDialog {
       const api = new mw.Api();
       return api.postWithEditToken({
         action: "edit",
+        format: "json",
         // @ts-expect-error
         formatversion: "2",
+        errorformat: "html",
+        errorlang: mw.config.get("wgUserLanguage") || "en",
+        errorsuselocal: true,
         section: s?.index,
         title: "Steward_requests/Permissions",
         nocreate: 1,
@@ -363,7 +369,7 @@ class ProcessDialog extends OO.ui.ProcessDialog {
     if (action === "preview") {
       console.log("preview");
       if (!this.checkInputs()) {
-        mw.notify("Please fill in all the required fields.", { type: "error" });
+        showErrorDialog("Please fill in all the required fields.");
         return new OO.ui.Process(() => {});
       }
       return new OO.ui.Process(() => {
@@ -382,15 +388,27 @@ class ProcessDialog extends OO.ui.ProcessDialog {
       });
     } else if (action === "submit") {
       if (!this.checkInputs()) {
-        mw.notify("Please fill in all the required fields.", { type: "error" });
+        showErrorDialog("Please fill in all the required fields.");
         return new OO.ui.Process(() => {});
       }
       return new OO.ui.Process(() => {
-        return this.submit().then(() => {
-          mw.notify("Request submitted successfully.", { type: "success" });
-          this.close();
-          location.reload();
-        });
+        const content = this.getRequestContent();
+        const submittedWikitext = `\n=== ${content.section} ===\n${content.text}`;
+        return this.submit().then(
+          (data) => {
+            const apiError = getEditApiError(data);
+            if (apiError) {
+              showErrorDialog(getApiErrorNotificationWithWikitext(apiError, submittedWikitext));
+              return;
+            }
+            mw.notify("Request submitted successfully.", { type: "success" });
+            this.close();
+            location.reload();
+          },
+          (code, data) => {
+            showErrorDialog(getApiErrorNotificationWithWikitext(data?.error || code, submittedWikitext));
+          }
+        );
       });
     } else if (action === "next") {
       if (this.state === "action") {

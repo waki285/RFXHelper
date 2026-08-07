@@ -41,9 +41,9 @@ devDependencies:
   prettier:
     specifier: ^3.2.5
     version: 3.2.5
-  types-mediawiki-renovate:
-    specifier: ^2.10.0
-    version: 2.12.1(@types/jquery@3.5.29)(@types/oojs-ui@0.47.6)
+  types-mediawiki:
+    specifier: ^1.10.1
+    version: 1.10.1
   typescript:
     specifier: ^5.3.3
     version: 5.4.5
@@ -1468,6 +1468,13 @@ packages:
     resolution: {integrity: sha512-wq0cICSkRLVaf3UGLMGItu/PtdY7oaXaI/RVU+xliKVOtRna3PRY57ZDfztpDL0n11vfymMUnXv8QwYCO7L1wg==}
     dependencies:
       undici-types: 5.26.5
+    dev: true
+
+  /@types/oojs-ui@0.46.4:
+    resolution: {integrity: sha512-tpQyPjxr6FhMRNaactbjNXkr4uCsKNQMOVNJiAO5AvzxoPddChNZp4gG37Pm80jAeDP11k9ww4durnEjzqqKsQ==}
+    dependencies:
+      '@types/jquery': 3.5.29
+      '@types/oojs': 7.0.6
     dev: true
 
   /@types/oojs-ui@0.47.6:
@@ -3327,14 +3334,16 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /types-mediawiki-renovate@2.12.1(@types/jquery@3.5.29)(@types/oojs-ui@0.47.6):
-    resolution: {integrity: sha512-9ZX6okwlJl4x18OcB/ZCoj+PYm2DzBWYWL2f9g/3RMTiqcKNSC+gTuvSey5s1asgBH/v6MB+al4pwWxoC5b4dg==}
+  /types-mediawiki@1.10.1:
+    resolution: {integrity: sha512-4TLcsy/lbfpLwwIn2l6lBxCzYYMAsJuQUmwfhkcEWA9yMzBpfcSvfcQQbiTUJPOe4UVghc2BI/3GcPkwXr412Q==}
     peerDependencies:
-      '@types/jquery': ^3.0.0
-      '@types/oojs-ui': '*'
+      vue: 3.2.23 || 3.2.37 || 3.3.9 || 3.4.27
+    peerDependenciesMeta:
+      vue:
+        optional: true
     dependencies:
       '@types/jquery': 3.5.29
-      '@types/oojs-ui': 0.47.6
+      '@types/oojs-ui': 0.46.4
     dev: true
 
   /typescript@5.4.5:
